@@ -21,7 +21,7 @@ Examples:
 }
 
 func runMakeCall(cmd *Command, args []string) {
-
+	ValidateArgCount(0,args)
 	callResult, err := MakeCall(args[0])
 
 	if err != nil {

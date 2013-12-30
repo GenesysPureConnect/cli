@@ -30,6 +30,8 @@ func runStatus(cmd *Command, args []string) {
 			ErrorAndExit(err.Error())
 		}
 	} else {
+		ValidateArgCount(1,args)
+		
 		status, err := GetStatus(args[0])
 
 		if err != nil {

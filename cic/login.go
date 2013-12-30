@@ -22,6 +22,7 @@ Examples:
 }
 
 func runLogin(cmd *Command, args []string) {
+	ValidateArgCount(3,args)
 	err := LoginAndSave(args[0], args[1], args[2])
 	if err != nil {
 		ErrorAndExit(err.Error())

@@ -21,6 +21,7 @@ Examples:
 }
 
 func runDefaults(cmd *Command, args []string) {
+	ValidateArgCount(1,args)
 	object, err := Defaults(args[0])
 
 	if err != nil {

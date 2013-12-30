@@ -20,8 +20,8 @@ type Command struct {
 	Flag flag.FlagSet
 
 	Usage string // first word is the command name
-	Short string // `forego help` output
-	Long  string // `forego help cmd` output
+	Short string // `cic help` output
+	Long  string // `cic help cmd` output
 }
 
 func (c *Command) printUsage() {

@@ -15,10 +15,17 @@ const (
 )
 
 func ErrorAndExit(format string, args ...interface{}) {
-	if format[0] == LF {
+	if len(format) > 0 && format[0] == LF {
 		fmt.Fprintf(os.Stderr, format[1:]+"\n", args...)
 	} else {
 		fmt.Fprintf(os.Stderr, fmt.Sprintf("ERROR: %s\n", format), args...)
 	}
 	os.Exit(1)
+}
+
+func ValidateArgCount(expected int, args []string){
+	if len(args) != expected {
+		fmt.Fprintf(os.Stderr, fmt.Sprintf("ERROR: Expected %d args, received %d\n", expected, len(args)))
+		os.Exit(1)	
+	} 
 }

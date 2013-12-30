@@ -156,15 +156,14 @@ func Select(objectType, selectFields, where string) (records []ConfigRecord, err
     }
 
     body, err := httpGet(server + "/icws/" + session + "/configuration/" + objectType + "?" + selectString +  whereString )
-    
     if err != nil {
-        return
+    	return
     }
 
     var result map[string][]ConfigRecord
     err = json.Unmarshal(body, &result)
 
-    records = result["items"]
+	records = result["items"]
     return
 
 }
@@ -301,18 +300,38 @@ func httpGet(url string) (body []byte, err error) {
 	}
 	body, err = ioutil.ReadAll(response.Body)
 	if response.StatusCode/100 != 2 {
-		var message map[string]string
-		fmt.Println("got errror")
-		json.Unmarshal(body, &message)
-
-		err = errors.New(message["message"])
-		//fmt.Println("got errror 2")
-
+		err = errors.New(createErrorMessage(response.StatusCode, body))
+		
 		return
 	}
 
 
 	return
+}
+
+func createErrorMessage(statusCode int, body []byte) (string){
+
+	var errorDescription string
+	
+	switch statusCode{
+	case 400:
+		errorDescription = "Bad Request"
+	case 401:
+		errorDescription = "Unauthorized"
+	case 403:
+		errorDescription = "Forbidden"
+	case 404:
+		errorDescription = "Not Found"
+	case 410:
+		errorDescription = "Gone"
+	case 500:
+		errorDescription = "Internal Server Error"		
+	}
+
+	var message map[string]string
+	json.Unmarshal(body, &message)
+
+	return errorDescription + ": " +message["message"]
 }
 
 func httpPost(url string, attrs map[string]string) (body []byte, err error, cookie string) {
@@ -336,12 +355,8 @@ func httpPost(url string, attrs map[string]string) (body []byte, err error, cook
 	body, err = ioutil.ReadAll(response.Body)
 
 	if response.StatusCode/100 != 2 {
-		var message map[string]interface{}
-		err = json.Unmarshal(body, &message)
-		if err != nil {
-			return
-		}
-		err = errors.New(fmt.Sprintf("%v", message["message"]))
+		err = errors.New(createErrorMessage(response.StatusCode, body))
+		
 		return
 	}
 
@@ -372,9 +387,8 @@ func httpPut(url string, attrs map[string]string) (body []byte, err error) {
 	body, err = ioutil.ReadAll(response.Body)
 
 	if response.StatusCode/100 != 2 {
-		var message map[string]string
-		json.Unmarshal(body, &message)
-		err = errors.New(message["message"])
+		err = errors.New(createErrorMessage(response.StatusCode, body))
+		
 		return
 	}
 

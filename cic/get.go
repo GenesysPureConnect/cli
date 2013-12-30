@@ -27,6 +27,7 @@ func runGet(cmd *Command, args []string) {
 	var properties string
 
 	if len(args) < 3 {
+		ValidateArgCount(2,args)
 		var buffer bytes.Buffer
 		objectDefaults, _ := Defaults(args[0])
 
@@ -39,7 +40,8 @@ func runGet(cmd *Command, args []string) {
 		properties = buffer.String()
 
 	} else {
-		properties = args[3]
+		ValidateArgCount(3,args)
+		properties = args[2]
 	}
 
 	object, err := Get(args[0], args[1], properties)
