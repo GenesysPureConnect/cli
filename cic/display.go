@@ -2,7 +2,7 @@
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
- 
+
 package main
 
 import (
@@ -67,17 +67,17 @@ func columnLengths(records []ConfigRecord, prefix string) (lengths map[string]in
 				}
 				length += len(lens) - 1
 			case []interface{}:
-	        	var buffer bytes.Buffer
+				var buffer bytes.Buffer
 				for _, element := range value {
-	                switch i := element.(type) {
-	                case map[string]interface{}:
-	                    buffer.WriteString(fmt.Sprintf("%v,", i["id"]))
-	                default:
-	                    buffer.WriteString(fmt.Sprintf("%v,", i))
-	                }
-	            }
+					switch i := element.(type) {
+					case map[string]interface{}:
+						buffer.WriteString(fmt.Sprintf("%v,", i["id"]))
+					default:
+						buffer.WriteString(fmt.Sprintf("%v,", i))
+					}
+				}
 
-	            length += len(strings.Trim(buffer.String(), ","))
+				length += len(strings.Trim(buffer.String(), ","))
 			default:
 				if value == nil {
 					length = len(" (null) ")
@@ -120,18 +120,18 @@ func recordRow(record ConfigRecord, columns []string, lengths map[string]int, pr
 		switch value := value.(type) {
 		case []ConfigRecord:
 			values[i] = strings.TrimSuffix(renderConfigRecords(value, fmt.Sprintf("%s.%s", prefix, column), lengths), "\n")
-        case []interface{}:
-        	var buffer bytes.Buffer
+		case []interface{}:
+			var buffer bytes.Buffer
 			for _, element := range value {
-                switch i := element.(type) {
-                case map[string]interface{}:
-                    buffer.WriteString(fmt.Sprintf("%v,", i["id"]))
-                default:
-                    buffer.WriteString(fmt.Sprintf("%v,", i))
-                }
-            }
+				switch i := element.(type) {
+				case map[string]interface{}:
+					buffer.WriteString(fmt.Sprintf("%v,", i["id"]))
+				default:
+					buffer.WriteString(fmt.Sprintf("%v,", i))
+				}
+			}
 
-            values[i] = fmt.Sprintf(fmt.Sprintf(" %%-%dv ", lengths[column]-2), strings.Trim(buffer.String(), ","))
+			values[i] = fmt.Sprintf(fmt.Sprintf(" %%-%dv ", lengths[column]-2), strings.Trim(buffer.String(), ","))
 		default:
 			if value == nil {
 				values[i] = fmt.Sprintf(fmt.Sprintf(" %%-%ds ", lengths[column]-2), "(null)")
@@ -185,7 +185,7 @@ func flattenConfigRecord(record ConfigRecord) (flattened ConfigRecord) {
 					flattened[fmt.Sprintf("%s.%s", key, k)] = v
 				}
 			}
-  		default:
+		default:
 			flattened[key] = value
 		}
 	}
@@ -198,8 +198,8 @@ func recordsHaveSubRows(records []ConfigRecord) bool {
 			switch value := value.(type) {
 			case []interface{}:
 				if len(value) > 0 {
-                    return true
-                    
+					return true
+
 				}
 			}
 		}
@@ -290,8 +290,6 @@ func DisplayList(list []string) {
 		fmt.Printf("%s\n", key)
 	}
 }
-
-
 
 func printIndent(indent int) {
 	for i := 0; i < indent; i++ {

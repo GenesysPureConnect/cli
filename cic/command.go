@@ -2,7 +2,7 @@
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
- 
+
 package main
 
 import (
@@ -26,7 +26,7 @@ type Command struct {
 
 func (c *Command) printUsage() {
 	if c.Runnable() {
-		fmt.Printf("Usage: inin %s\n\n", c.Usage)
+		fmt.Printf("Usage: cic %s\n\n", c.Usage)
 	}
 	fmt.Println(strings.Trim(c.Long, "\n"))
 }

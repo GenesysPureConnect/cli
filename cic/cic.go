@@ -2,7 +2,7 @@
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
- 
+
 package main
 
 import (
@@ -91,15 +91,14 @@ func GetVersion() (version ConfigRecord, err error) {
 		ErrorAndExit(err.Error())
 	}
 
-
-	body, err := httpGet(server+"/icws/connection/version")
+	body, err := httpGet(server + "/icws/connection/version")
 
 	if err != nil {
 		ErrorAndExit(err.Error())
 	}
 
 	err = json.Unmarshal(body, &version)
-	
+
 	return
 
 }
@@ -111,8 +110,7 @@ func GetFeatures() (features []string, err error) {
 		ErrorAndExit(err.Error())
 	}
 
-
-	body, err := httpGet(server+"/icws/connection/features")
+	body, err := httpGet(server + "/icws/connection/features")
 
 	if err != nil {
 		ErrorAndExit(err.Error())
@@ -120,9 +118,9 @@ func GetFeatures() (features []string, err error) {
 
 	var featureMap map[string][]map[string]interface{}
 	err = json.Unmarshal(body, &featureMap)
-	
+
 	features = make([]string, len(featureMap["featureInfoList"]))
-	
+
 	i := 0
 	for _, value := range featureMap["featureInfoList"] {
 		features[i] = fmt.Sprintf("%v", value["featureId"])
@@ -139,32 +137,32 @@ func Select(objectType, selectFields, where string) (records []ConfigRecord, err
 		objectType += "s"
 	}
 
-    server, session := getServerAndSession()
+	server, session := getServerAndSession()
 
-    var selectString string
-    if selectFields == "*"{
-        selectString = ""
-    }else{
-        selectString = "select=" + selectFields        
-    }
+	var selectString string
+	if selectFields == "*" {
+		selectString = ""
+	} else {
+		selectString = "select=" + selectFields
+	}
 
-    var whereString string
-    if len(where) == 0{
-        whereString = ""
-    }else{
-        whereString = "&where=" + where        
-    }
+	var whereString string
+	if len(where) == 0 {
+		whereString = ""
+	} else {
+		whereString = "&where=" + where
+	}
 
-    body, err := httpGet(server + "/icws/" + session + "/configuration/" + objectType + "?" + selectString +  whereString )
-    if err != nil {
-    	return
-    }
+	body, err := httpGet(server + "/icws/" + session + "/configuration/" + objectType + "?" + selectString + whereString)
+	if err != nil {
+		return
+	}
 
-    var result map[string][]ConfigRecord
-    err = json.Unmarshal(body, &result)
+	var result map[string][]ConfigRecord
+	err = json.Unmarshal(body, &result)
 
 	records = result["items"]
-    return
+	return
 
 }
 
@@ -301,37 +299,36 @@ func httpGet(url string) (body []byte, err error) {
 	body, err = ioutil.ReadAll(response.Body)
 	if response.StatusCode/100 != 2 {
 		err = errors.New(createErrorMessage(response.StatusCode, body))
-		
+
 		return
 	}
-
 
 	return
 }
 
-func createErrorMessage(statusCode int, body []byte) (string){
+func createErrorMessage(statusCode int, body []byte) string {
 
 	var errorDescription string
-	
-	switch statusCode{
+
+	switch statusCode {
 	case 400:
-		errorDescription = "Bad Request"
+		errorDescription = "Bad Request (400)"
 	case 401:
-		errorDescription = "Unauthorized"
+		errorDescription = "Unauthorized (401)"
 	case 403:
-		errorDescription = "Forbidden"
+		errorDescription = "Forbidden (403)"
 	case 404:
-		errorDescription = "Not Found"
+		errorDescription = "Not Found (404)"
 	case 410:
-		errorDescription = "Gone"
+		errorDescription = "Gone (410)"
 	case 500:
-		errorDescription = "Internal Server Error"		
+		errorDescription = "Internal Server Error (500)"
 	}
 
 	var message map[string]string
 	json.Unmarshal(body, &message)
 
-	return errorDescription + ": " +message["message"]
+	return errorDescription + ": " + message["errorId"] + " " + message["message"]
 }
 
 func httpPost(url string, attrs map[string]string) (body []byte, err error, cookie string) {
@@ -356,9 +353,10 @@ func httpPost(url string, attrs map[string]string) (body []byte, err error, cook
 
 	if response.StatusCode/100 != 2 {
 		err = errors.New(createErrorMessage(response.StatusCode, body))
-		
+
 		return
 	}
+    
 
 	if response.Header["Set-Cookie"] != nil {
 		cookie = response.Header["Set-Cookie"][0]
@@ -388,7 +386,7 @@ func httpPut(url string, attrs map[string]string) (body []byte, err error) {
 
 	if response.StatusCode/100 != 2 {
 		err = errors.New(createErrorMessage(response.StatusCode, body))
-		
+
 		return
 	}
 

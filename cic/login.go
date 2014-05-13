@@ -5,7 +5,12 @@
 
 package main
 
-import ("fmt")
+import (
+	"bufio"
+	"fmt"
+	"os"
+    "strings"
+)
 
 var cmdLogin = &Command{
 	Run:   runLogin,
@@ -22,13 +27,37 @@ Examples:
 }
 
 func runLogin(cmd *Command, args []string) {
-	ValidateArgCount(3,args)
-	err := LoginAndSave(args[0], args[1], args[2])
+	var server, username, password string
+
+	if len(args) == 3 {
+		server = args[0]
+		username = args[1]
+		password = args[2]
+	} else {
+		in := bufio.NewReader(os.Stdin)
+		fmt.Print("Server: ")
+
+		server, _ = in.ReadString('\n')
+
+		fmt.Print("User: ")
+		username, _ = in.ReadString('\n')
+
+		fmt.Print("Password: ")
+		password, _ = in.ReadString('\n')
+	}
+    
+    if(strings.Index(server, "http") == -1){
+        server = "http://" + server + ":8018";
+    }
+    
+    fmt.Println("connecting to " + server + " as " + username)
+    
+	err := LoginAndSave(server, username, password)
+
 	if err != nil {
 		ErrorAndExit(err.Error())
-	}else{
-		fmt.Println("Login Successful")
 	}
+	fmt.Println("Login Successful")
 }
 
 var cmdLogout = &Command{

@@ -2,7 +2,7 @@
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
- 
+
 package main
 
 import ()
@@ -21,7 +21,7 @@ Examples:
 }
 
 func runDefaults(cmd *Command, args []string) {
-	ValidateArgCount(1,args)
+	ValidateArgCount(1, args)
 	object, err := Defaults(args[0])
 
 	if err != nil {

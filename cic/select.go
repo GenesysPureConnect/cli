@@ -2,13 +2,15 @@
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
- 
+
 package main
 
-import ("strings"
-		"bytes")
+import (
+	"bytes"
+	"strings"
+)
 
-var  cmdSelect = &Command{
+var cmdSelect = &Command{
 	Run:   runSelect,
 	Usage: "select <params> FROM <configurationType> WHERE <whereClause>",
 	Short: "Perform a query on a particular configuration type",
@@ -28,15 +30,14 @@ ct - contains
 
 var operators = []string{"sw", "eq", "ct", "="}
 
-
 func runSelect(cmd *Command, args []string) {
 	fromIndex := getIndex("from", args)
 	whereIndex := getIndex("where", args)
 
-	configType := args[fromIndex + 1]
+	configType := args[fromIndex+1]
 
 	var fieldsBuffer bytes.Buffer
-	
+
 	for _, value := range args[0:fromIndex] {
 		fieldsBuffer.WriteString(value + ",")
 	}
@@ -44,23 +45,23 @@ func runSelect(cmd *Command, args []string) {
 	selectParams = strings.Trim(selectParams, ",")
 
 	var whereBuffer bytes.Buffer
-	
-	if(whereIndex > -1){
-		whereArgs := args[whereIndex + 1 :]
+
+	if whereIndex > -1 {
+		whereArgs := args[whereIndex+1:]
 		for index, value := range whereArgs {
 			var separator, val string
 
 			val = value
-			
-			if getIndex(value, operators) > -1 || ( (len(whereArgs) > (index + 1)) && getIndex(whereArgs[index + 1], operators) > -1){
+
+			if getIndex(value, operators) > -1 || ((len(whereArgs) > (index + 1)) && getIndex(whereArgs[index+1], operators) > -1) {
 				separator = "%20"
-			}else{
-				separator = ""	
+			} else {
+				separator = ""
 			}
 
-			if strings.ToLower(value) == "and"{
+			if strings.ToLower(value) == "and" {
 				val = ","
-			}else if value == "="{
+			} else if value == "=" {
 				val = "eq"
 			}
 
@@ -69,7 +70,7 @@ func runSelect(cmd *Command, args []string) {
 
 	}
 	whereClause := whereBuffer.String()
-	if(len(whereClause) > 0){
+	if len(whereClause) > 0 {
 		whereClause = strings.Trim(whereClause, ",")
 	}
 
@@ -85,17 +86,17 @@ func runSelect(cmd *Command, args []string) {
 
 }
 
-func getIndex(word string, args[] string)(index int){
+func getIndex(word string, args []string) (index int) {
 
-	index = 0;
+	index = 0
 
 	for _, key := range args {
-		if(strings.ToLower(key) == word){
-			return;
+		if strings.ToLower(key) == word {
+			return
 		}
 		index++
 	}
 
 	index = -1
-	return;
+	return
 }
