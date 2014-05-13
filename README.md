@@ -1,8 +1,8 @@
 ININ Command Line Interface
 =======
-The ININ Command line interface tool will allow you to interact with CIC through the command line.  
+The CIC Command line interface tool will allow you to interact with CIC through the command line.  
 
-Usage: inin < command > [< args >]
+Usage: cic < command > [< args >]
 
 Available commands:
 
