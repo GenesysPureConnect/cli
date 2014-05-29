@@ -325,10 +325,10 @@ func createErrorMessage(statusCode int, body []byte) string {
 		errorDescription = "Internal Server Error (500)"
 	}
 
-	var message map[string]string
+	var message map[string]interface{}
 	json.Unmarshal(body, &message)
-
-	return errorDescription + ": " + message["errorId"] + " " + message["message"]
+    
+	return errorDescription + ": " + message["errorId"].(string) + " " + message["message"].(string)
 }
 
 func httpPost(url string, attrs map[string]string) (body []byte, err error, cookie string) {
