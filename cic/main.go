@@ -12,6 +12,7 @@ import (
 var commands = []*Command{
 	cmdHelp,
 	cmdDefaults,
+    cmdDelete,
 	cmdFeatures,
 	cmdGet,
 	cmdInteraction,

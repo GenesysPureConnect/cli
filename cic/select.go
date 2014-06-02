@@ -86,17 +86,3 @@ func runSelect(cmd *Command, args []string) {
 
 }
 
-func getIndex(word string, args []string) (index int) {
-
-	index = 0
-
-	for _, key := range args {
-		if strings.ToLower(key) == word {
-			return
-		}
-		index++
-	}
-
-	index = -1
-	return
-}

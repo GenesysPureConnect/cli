@@ -279,6 +279,33 @@ func getServerAndSession() (server, session string) {
 	return
 }
 
+func httpDelete(url string) ( err error) {
+
+	req, err := httpRequest("DELETE", url, nil)
+
+	if err != nil {
+		return
+	}
+
+	response, err := httpClient().Do(req)
+	if err != nil {
+		return
+	}
+	defer response.Body.Close()
+	if response.StatusCode == 401 {
+		err = errors.New("authorization expired, please run `cic login`")
+		return
+	}
+	body, _ := ioutil.ReadAll(response.Body)
+	if response.StatusCode/100 != 2 {
+		err = errors.New(createErrorMessage(response.StatusCode, body))
+
+		return
+	}
+
+	return
+}
+
 func httpGet(url string) (body []byte, err error) {
 
 	req, err := httpRequest("GET", url, nil)
@@ -424,5 +451,21 @@ func httpRequest(method, url string, body io.Reader) (request *http.Request, err
 	}
 
 	// request.Header.Add("User-Agent", fmt.Sprintf("cic cli (%s-%s)", runtime.GOOS, runtime.GOARCH))
+	return
+}
+
+
+func getIndex(word string, args []string) (index int) {
+
+	index = 0
+
+	for _, key := range args {
+		if strings.ToLower(key) == word {
+			return
+		}
+		index++
+	}
+
+	index = -1
 	return
 }
