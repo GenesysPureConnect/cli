@@ -5,7 +5,7 @@
 
 package main
 
-import ()
+import ("fmt")
 
 var cmdFeatures = &Command{
 	Run:   runFeatures,
@@ -17,11 +17,15 @@ var cmdFeatures = &Command{
 
 func runFeatures(cmd *Command, args []string) {
 
-	version, err := GetFeatures()
+	features, err := GetFeatures()
 
 	if err != nil {
 		ErrorAndExit(err.Error())
 	}
 
-	DisplayList(version)
+	//DisplayList(version)
+
+	for  _,feature := range features {
+		fmt.Printf("%s - %i\n", feature.FeatureId, feature.Version)
+	}
 }

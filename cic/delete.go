@@ -28,10 +28,8 @@ func Delete(objectType, id string) ( err error){
 		objectType += "s"
 	}
 
-	server, session := getServerAndSession()
-    
-	err = httpDelete(server + "/icws/" + session + "/configuration/" + objectType + "/" + id);
-    
+	icws := getIcws()
+    err = icws.DeleteConfigurationRecord(objectType,id)
 	return err;
 }
 
@@ -47,7 +45,6 @@ func runDelete(cmd *Command, args []string) {
 	if err != nil {
 		ErrorAndExit(err.Error())
 	}
-    
+
     fmt.Println(fmt.Sprintf("%s deleted\n", id))
 }
-

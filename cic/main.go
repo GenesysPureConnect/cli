@@ -7,6 +7,8 @@ package main
 
 import (
 	"os"
+	"log"
+	"io/ioutil"
 )
 
 var commands = []*Command{
@@ -26,6 +28,10 @@ var commands = []*Command{
 }
 
 func main() {
+
+	//turn off the logger
+	log.SetOutput(ioutil.Discard)
+
 	args := os.Args[1:]
 
 	if len(args) < 1 {

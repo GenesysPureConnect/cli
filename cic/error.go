@@ -15,6 +15,7 @@ const (
 )
 
 func ErrorAndExit(format string, args ...interface{}) {
+	
 	if len(format) > 0 && format[0] == LF {
 		fmt.Fprintf(os.Stderr, format[1:]+"\n", args...)
 	} else {

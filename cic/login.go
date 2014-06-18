@@ -9,7 +9,6 @@ import (
 	"bufio"
 	"fmt"
 	"os"
-    "strings"
 )
 
 var cmdLogin = &Command{
@@ -22,7 +21,7 @@ Log in to a CIC server
 Examples:
 
   cic login server user password
-  
+
 `,
 }
 
@@ -45,15 +44,12 @@ func runLogin(cmd *Command, args []string) {
 		fmt.Print("Password: ")
 		password, _ = in.ReadString('\n')
 	}
-    
-    if(strings.Index(server, "http") == -1){
-        server = "http://" + server + ":8018";
-    }
-    
-    fmt.Println("connecting to " + server + " as " + username)
-    
-	err := LoginAndSave(server, username, password)
 
+    fmt.Println("connecting to " + server + " as " + username)
+
+
+	err := LoginAndSave(server, username, password)
+	fmt.Print("login and save complete")
 	if err != nil {
 		ErrorAndExit(err.Error())
 	}
@@ -69,7 +65,7 @@ Log out from CIC
 
 Examples:
 
-  cic logout 
+  cic logout
 `,
 }
 
@@ -80,6 +76,7 @@ func runLogout(cmd *Command, args []string) {
 	Config.Delete("current", "cookie")
 	Config.Delete("current", "token")
 	Config.Delete("current", "server")
+	Config.Delete("current", "userid")
 }
 
 func LoginAndSave(server string, username string, password string) (err error) {
@@ -89,8 +86,11 @@ func LoginAndSave(server string, username string, password string) (err error) {
 	Config.Delete("current", "cookie")
 	Config.Delete("current", "token")
 	Config.Delete("current", "server")
+	Config.Delete("current", "userid")
 
-	token, session, cookie, err := Login(server, username, password)
+	server, token, session, cookie, err := Login(server, username, password)
+
+
 	if err != nil {
 		return
 	}
@@ -100,6 +100,7 @@ func LoginAndSave(server string, username string, password string) (err error) {
 	Config.Save("current", "cookie", cookie)
 	Config.Save("current", "token", token)
 	Config.Save("current", "server", server)
+	Config.Save("current", "userid", username)
 
 	return
 }

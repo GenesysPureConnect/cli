@@ -10,15 +10,16 @@ import (
 	"fmt"
 	"sort"
 	"strings"
+	"github.com/interactiveintelligence/icws_golib"
 )
 
-func DisplayConfigRecords(records []ConfigRecord) {
+func DisplayConfigRecords(records []icws_golib.ConfigRecord) {
 	if len(records) > 0 {
 		fmt.Print(RenderConfigRecords(records))
 	}
 }
 
-func recordColumns(records []ConfigRecord) (columns []string) {
+func recordColumns(records []icws_golib.ConfigRecord) (columns []string) {
 	for _, record := range records {
 		for key, _ := range record {
 			found := false
@@ -36,15 +37,15 @@ func recordColumns(records []ConfigRecord) (columns []string) {
 	return
 }
 
-func coerceConfigRecords(uncoerced []map[string]interface{}) (records []ConfigRecord) {
-	records = make([]ConfigRecord, len(uncoerced))
+func coerceConfigRecords(uncoerced []map[string]interface{}) (records []icws_golib.ConfigRecord) {
+	records = make([]icws_golib.ConfigRecord, len(uncoerced))
 	for i, record := range uncoerced {
-		records[i] = ConfigRecord(record)
+		records[i] = icws_golib.ConfigRecord(record)
 	}
 	return
 }
 
-func columnLengths(records []ConfigRecord, prefix string) (lengths map[string]int) {
+func columnLengths(records []icws_golib.ConfigRecord, prefix string) (lengths map[string]int) {
 	lengths = make(map[string]int)
 
 	columns := recordColumns(records)
@@ -57,7 +58,7 @@ func columnLengths(records []ConfigRecord, prefix string) (lengths map[string]in
 			key := fmt.Sprintf("%s.%s", prefix, column)
 			length := 0
 			switch value := value.(type) {
-			case []ConfigRecord:
+			case []icws_golib.ConfigRecord:
 				lens := columnLengths(value, key)
 				for k, l := range lens {
 					length += l
@@ -113,12 +114,12 @@ func recordSeparator(columns []string, lengths map[string]int, prefix string) (o
 	return
 }
 
-func recordRow(record ConfigRecord, columns []string, lengths map[string]int, prefix string) (out string) {
+func recordRow(record icws_golib.ConfigRecord, columns []string, lengths map[string]int, prefix string) (out string) {
 	values := make([]string, len(columns))
 	for i, column := range columns {
 		value := record[column]
 		switch value := value.(type) {
-		case []ConfigRecord:
+		case []icws_golib.ConfigRecord:
 			values[i] = strings.TrimSuffix(renderConfigRecords(value, fmt.Sprintf("%s.%s", prefix, column), lengths), "\n")
 		case []interface{}:
 			var buffer bytes.Buffer
@@ -165,8 +166,8 @@ func recordRow(record ConfigRecord, columns []string, lengths map[string]int, pr
 	return
 }
 
-func flattenConfigRecord(record ConfigRecord) (flattened ConfigRecord) {
-	flattened = make(ConfigRecord)
+func flattenConfigRecord(record icws_golib.ConfigRecord) (flattened icws_golib.ConfigRecord) {
+	flattened = make(icws_golib.ConfigRecord)
 	for key, value := range record {
 		if key == "attributes" {
 			continue
@@ -175,9 +176,9 @@ func flattenConfigRecord(record ConfigRecord) (flattened ConfigRecord) {
 		case map[string]interface{}:
 			if value["records"] != nil {
 				unflattened := value["records"].([]interface{})
-				subflattened := make([]ConfigRecord, len(unflattened))
+				subflattened := make([]icws_golib.ConfigRecord, len(unflattened))
 				for i, record := range unflattened {
-					subflattened[i] = (map[string]interface{})(flattenConfigRecord(ConfigRecord(record.(map[string]interface{}))))
+					subflattened[i] = (map[string]interface{})(flattenConfigRecord(icws_golib.ConfigRecord(record.(map[string]interface{}))))
 				}
 				flattened[key] = subflattened
 			} else {
@@ -192,7 +193,7 @@ func flattenConfigRecord(record ConfigRecord) (flattened ConfigRecord) {
 	return
 }
 
-func recordsHaveSubRows(records []ConfigRecord) bool {
+func recordsHaveSubRows(records []icws_golib.ConfigRecord) bool {
 	for _, record := range records {
 		for _, value := range record {
 			switch value := value.(type) {
@@ -207,7 +208,7 @@ func recordsHaveSubRows(records []ConfigRecord) bool {
 	return false
 }
 
-func renderConfigRecords(records []ConfigRecord, prefix string, lengths map[string]int) string {
+func renderConfigRecords(records []icws_golib.ConfigRecord, prefix string, lengths map[string]int) string {
 	var out bytes.Buffer
 
 	columns := recordColumns(records)
@@ -226,8 +227,8 @@ func renderConfigRecords(records []ConfigRecord, prefix string, lengths map[stri
 	return out.String()
 }
 
-func RenderConfigRecords(records []ConfigRecord) string {
-	flattened := make([]ConfigRecord, len(records))
+func RenderConfigRecords(records []icws_golib.ConfigRecord) string {
+	flattened := make([]icws_golib.ConfigRecord, len(records))
 	for i, record := range records {
 		flattened[i] = flattenConfigRecord(record)
 	}
@@ -235,7 +236,7 @@ func RenderConfigRecords(records []ConfigRecord) string {
 	return renderConfigRecords(flattened, "", lengths)
 }
 
-func DisplayConfigRecord(record ConfigRecord) {
+func DisplayConfigRecord(record icws_golib.ConfigRecord) {
 	DisplayInterfaceMap(record, 0)
 }
 

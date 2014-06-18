@@ -5,7 +5,7 @@
 
 package main
 
-import ()
+import ("fmt")
 
 var cmdVersion = &Command{
 	Run:   runVersion,
@@ -23,5 +23,13 @@ func runVersion(cmd *Command, args []string) {
 		ErrorAndExit(err.Error())
 	}
 
-	DisplayConfigRecord(version)
+	fmt.Printf("Major Version: %s", version.MajorVersion)
+	fmt.Printf("Minor Version: %s", version.MinorVersion)
+	fmt.Printf("SU: %s", version.Su)
+	fmt.Printf("Product Id: %s", version.ProductId)
+	fmt.Printf("Code Base Id: %s", version.CodeBaseId)
+	fmt.Printf("Build: %s", version.Build)
+	fmt.Printf("Release Display String: %s", version.ProductReleaseDisplayString)
+	fmt.Printf("Patch Display String: %s", version.ProductPatchDisplayString)
+
 }
