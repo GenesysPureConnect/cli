@@ -8,6 +8,7 @@ Available commands:
 
     help      Show this help
     defaults  Show the default values for a new item of the configuration type
+    delete    Perform a delete on a particular configuration item
     features  Gets feature information about the cic server 
     get       Gets a configuration object
     interaction  Performs the action on an interaction 
